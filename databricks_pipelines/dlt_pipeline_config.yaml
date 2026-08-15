@@ -1,0 +1,12 @@
+resources:
+  pipelines:
+    pipeline_gold_products_dlt_pipeline:
+      name: Gold_Products_DLT_Pipeline
+      libraries:
+        - glob:
+            include: /Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Gold_Products
+      schema: gold
+      photon: true
+      catalog: databricks_cata
+      serverless: true
+      root_path: /Workspace/Users/mnigam@smu.edu/New Pipeline 2026-08-12 13:05
