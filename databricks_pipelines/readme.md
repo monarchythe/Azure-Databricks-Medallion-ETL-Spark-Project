@@ -2,6 +2,11 @@
 
 ### .yaml configuration files of the etl pipelines 
 
+- [The Databricks END TO END Medallion ETL Pipeline JOB_DEFINITION ](https://github.com/monarchythe/Azure-Databricks-Medallion-ETL-Spark-Project/blob/main/databricks_pipelines/ecommerce_lakehouse_pipeline_JOB_DEFINITION.yaml)
+- [Delta Live Table, Declarative ETL pipeline configurations](https://github.com/monarchythe/Azure-Databricks-Medallion-ETL-Spark-Project/blob/main/databricks_pipelines/dlt_pipeline_config.yaml)
+
+
+
 
 ### Delta Live Table, Declarative ETL pipeline 
 <img width="1717" height="892" alt="Screenshot 2026-08-14 at 8 40 26 PM" src="https://github.com/user-attachments/assets/2362c4d0-8cd5-4703-9c79-f3b1002fac99" />
