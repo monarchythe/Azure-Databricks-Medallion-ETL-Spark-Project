@@ -1,0 +1,70 @@
+resources:
+  jobs:
+    ecommerce_lakehouse_pipeline:
+      name: ecommerce_lakehouse_pipeline
+      tasks:
+        - task_key: Config_datasets
+          notebook_task:
+            notebook_path: /Workspace/Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Parameters_bronze
+            source: WORKSPACE
+        - task_key: Bronze_Incremental
+          depends_on:
+            - task_key: Config_datasets
+          for_each_task:
+            inputs: "{{tasks.Config_datasets.values.output_datasets}}"
+            task:
+              task_key: Bronze_Ingest_Autoloader
+              notebook_task:
+                notebook_path: /Workspace/Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Databricks-NoteBook
+                base_parameters:
+                  file_name: "{{input.file_name}}"
+                source: WORKSPACE
+        - task_key: Silver_Customers
+          depends_on:
+            - task_key: Bronze_Incremental
+          notebook_task:
+            notebook_path: /Workspace/Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Silver_Customers
+            source: WORKSPACE
+        - task_key: Silver_Orders
+          depends_on:
+            - task_key: Bronze_Incremental
+          notebook_task:
+            notebook_path: /Workspace/Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Silver_Orders
+            source: WORKSPACE
+        - task_key: Silver_Products
+          depends_on:
+            - task_key: Bronze_Incremental
+          notebook_task:
+            notebook_path: /Workspace/Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Silver_Products
+            source: WORKSPACE
+        - task_key: Gold_Dim_Customers
+          depends_on:
+            - task_key: Silver_Customers
+            - task_key: Silver_Orders
+            - task_key: Silver_Products
+          notebook_task:
+            notebook_path: /Workspace/Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Gold_Customers
+            source: WORKSPACE
+          environment_key: Gold_Dim_Customers_environment
+        - task_key: Gold_Dim_Products_DLT_pipeline
+          depends_on:
+            - task_key: Silver_Customers
+            - task_key: Silver_Orders
+            - task_key: Silver_Products
+          pipeline_task:
+            pipeline_id: 9233124a-666f-4a3d-804d-14f2e63a4ea3
+        - task_key: Gold_Fact_Orders
+          depends_on:
+            - task_key: Gold_Dim_Customers
+            - task_key: Gold_Dim_Products_DLT_pipeline
+          notebook_task:
+            notebook_path: /Workspace/Users/mnigam@smu.edu/Azure-Databricks-Medallion-ETL-Spark-Project/Gold_orders
+            source: WORKSPACE
+          environment_key: Gold_Dim_Customers_environment
+      queue:
+        enabled: true
+      environments:
+        - environment_key: Gold_Dim_Customers_environment
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED
